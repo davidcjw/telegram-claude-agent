@@ -1,0 +1,10 @@
+.env
+*.log
+history.txt
+offset.txt
+chat_id.txt
+*.pid
+.loop.pid
+__pycache__/
+*.pyc
+.DS_Store
