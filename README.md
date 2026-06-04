@@ -1,6 +1,7 @@
 # Telegram Claude Agent - Your AI Assistant in your pocket
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![AgentReady Score](https://agentready.davidcjw.com/api/badge/davidcjw/telegram-claude-agent)](https://agentready.davidcjw.com/results/davidcjw/telegram-claude-agent)
 
 A Telegram bot that gives you a personal Claude Code agent on your phone. Send a message, get a response — including full tool use (web search, bash, file edits, etc.) with live status updates as it works.
 
