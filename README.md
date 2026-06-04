@@ -1,6 +1,14 @@
-# telegram-claude-agent
+# Telegram Claude Agent - Your AI Assistant in your pocket
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A Telegram bot that gives you a personal Claude Code agent on your phone. Send a message, get a response — including full tool use (web search, bash, file edits, etc.) with live status updates as it works.
+
+## No API key required — works with your Claude subscription
+
+This bot runs on top of `claude --print` (the Claude Code CLI in headless mode), which means it uses your existing **Claude Pro or Max subscription** — not the Anthropic API. No separate billing, no usage caps beyond what your plan already includes.
+
+> **Heads up:** Anthropic is changing how headless `claude --print` usage is billed starting **June 15, 2026**. After that date, agentic/SDK usage will be metered separately from your subscription. See [Anthropic's announcement](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan) for details. Until then, it runs entirely on your existing plan.
 
 ## What it does
 
@@ -11,6 +19,26 @@ A Telegram bot that gives you a personal Claude Code agent on your phone. Send a
 - **Long tasks** — jobs running over 10 minutes are backgrounded; the bot follows up when done
 - **Memory distillation** — every 20 exchanges, key facts are extracted and saved to a persistent memory file
 - **Runs as a LaunchAgent** — starts on login, restarts on crash, no terminal needed
+
+## Table of Contents
+
+- [No API key required](#no-api-key-required--works-with-your-claude-subscription)
+- [What it does](#what-it-does)
+- [Prerequisites](#prerequisites)
+- [Quick start](#quick-start)
+- [Getting a Telegram bot token](#getting-a-telegram-bot-token)
+- [Getting your chat ID](#getting-your-chat-id)
+- [Customising your agent](#customising-your-agent)
+- [Installed file layout](#installed-file-layout)
+- [Useful commands](#useful-commands)
+- [Voice transcription](#voice-transcription-optional-apple-silicon-only)
+- [Running multiple agents](#running-multiple-agents)
+- [Non-macOS (Linux)](#non-macos-linux)
+- [How it works](#how-it-works)
+- [Security note](#security-note)
+- [Contributing](#contributing)
+- [Code of Conduct](#code-of-conduct)
+- [License](#license)
 
 ## Prerequisites
 
@@ -25,31 +53,24 @@ You also need a [Telegram bot token](#getting-a-telegram-bot-token) and to know 
 
 ## Quick start
 
-```bash
-git clone https://github.com/YOUR_USERNAME/telegram-claude-agent.git
-cd telegram-claude-agent
-bash install.sh
-```
+Setup runs entirely inside Claude Code — no cloning required.
 
-The installer will prompt you for:
-1. **Agent name** — a short lowercase name (e.g. `hans`, `jarvis`, `mybot`)
-2. **Bot token** — from [@BotFather](https://t.me/BotFather)
-3. **Chat ID** — your personal Telegram user ID
-4. **Binary paths** — auto-detected, confirm or override
+1. Open [INSTALL_PROMPT.md](INSTALL_PROMPT.md) and copy the prompt inside the code block
+2. Open a new Claude Code session (`claude` in your terminal)
+3. Paste and send — Claude will ask for your agent name, bot token, and chat ID, then set everything up
 
-After install, send your bot a message on Telegram to confirm it's working.
+That's it. Claude handles path detection, file creation, and LaunchAgent registration interactively.
 
 ## Getting a Telegram bot token
 
-1. Open Telegram and search for [@BotFather](https://t.me/BotFather)
+1. Open [@BotFather](https://t.me/BotFather) on Telegram
 2. Send `/newbot` and follow the prompts
 3. Copy the token (looks like `123456:ABC-DEF1234...`)
 
 ## Getting your chat ID
 
-1. Send your bot any message (e.g. `/start`)
-2. Visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
-3. Find `"chat": { "id": 123456789 }` in the response — that number is your chat ID
+1. Open [@UserInfoBot](https://t.me/userinfobot) on Telegram
+2. Press the start button and you should receive a message containing your chat ID
 
 ## Customising your agent
 
@@ -89,19 +110,20 @@ launchctl load -w ~/Library/LaunchAgents/com.claude.telegram.<agentname>.plist
 launchctl unload ~/Library/LaunchAgents/com.claude.telegram.<agentname>.plist
 ```
 
-## Voice transcription (optional)
+## Voice transcription (optional, Apple Silicon only)
 
-Voice messages are supported on Apple Silicon Macs via `mlx-whisper`:
+Voice messages are transcribed locally via `mlx-whisper`. Step 9 of the install prompt walks you through it — you choose between two models:
 
-```bash
-pip install mlx-whisper
-```
+| Model | Size | Best for |
+|-------|------|----------|
+| `whisper-small` | ~500MB | Everyday English, fast |
+| `whisper-large-v3-turbo` *(recommended)* | ~800MB | Accents, mixed languages |
 
-The bot returns a graceful error message if `mlx-whisper` is not installed — text messages always work.
+The model is pre-downloaded during setup so the first voice message is instant. Text messages always work regardless.
 
 ## Running multiple agents
 
-Run `install.sh` again with a different agent name. Each agent gets its own directory, token entry in `.env`, and LaunchAgent plist. They run independently.
+Run the `INSTALL_PROMPT.md` in a new `claude` session with a different agent name. Each agent gets its own directory, token entry in `.env`, and LaunchAgent plist. They run independently.
 
 ## Non-macOS (Linux)
 
@@ -123,3 +145,15 @@ Or create a systemd service pointing to that script.
 ## Security note
 
 The bot only responds to the single `CHAT_ID` you configure — all other senders are silently ignored. Keep your `.env` file private (it's in `.gitignore`).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. The short version: open an issue before starting significant work, keep `INSTALL_PROMPT.md` in sync with any `loop.sh` changes, and test manually before submitting a PR.
+
+## Code of Conduct
+
+This project follows the [Contributor Covenant v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). By participating you agree to uphold a welcoming, harassment-free environment.
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for details.

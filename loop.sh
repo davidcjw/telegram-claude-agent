@@ -103,7 +103,9 @@ is_cancel() {
 
 transcribe_voice() {
   local file_id="$1"
-  local file_info file_path audio_file transcript
+  local whisper_model file_info file_path audio_file transcript
+  whisper_model=$(cat "$BASE/whisper_model.txt" 2>/dev/null)
+  [[ -z "$whisper_model" ]] && { echo ""; return; }
   file_info=$(curl -sf "https://api.telegram.org/bot${TOKEN}/getFile?file_id=${file_id}" 2>/dev/null) \
     || { echo ""; return; }
   file_path=$(echo "$file_info" | "$NODE_BIN" -e '
@@ -116,9 +118,9 @@ if (d.ok) process.stdout.write(d.result.file_path || "");
     || { rm -f "$audio_file"; echo ""; return; }
   transcript=$("$PYTHON_BIN" -c '
 import mlx_whisper, sys
-result = mlx_whisper.transcribe(sys.argv[1], path_or_hf_repo="mlx-community/whisper-large-v3-turbo")
+result = mlx_whisper.transcribe(sys.argv[1], path_or_hf_repo=sys.argv[2])
 print(result["text"].strip())
-' "$audio_file" 2>/dev/null) || transcript=""
+' "$audio_file" "$whisper_model" 2>/dev/null) || transcript=""
   rm -f "$audio_file"
   echo "$transcript"
 }
@@ -264,7 +266,7 @@ while true; do
     tg_send "_Transcribing voice note..._"
     cur_msg=$(transcribe_voice "$file_id")
     if [[ -z "$cur_msg" ]]; then
-      tg_send "Couldn't transcribe — type your message or install mlx_whisper (see README)."
+      tg_send "Couldn't transcribe — voice not set up or mlx_whisper not installed (see README)."
       continue
     fi
     echo "[$(date)] transcribed: $cur_msg" >> "$LOG"
