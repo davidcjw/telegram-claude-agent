@@ -9,7 +9,7 @@ A Telegram bot that gives you a personal Claude Code agent on your phone. Send a
 
 This bot runs on top of `claude --print` (the Claude Code CLI in headless mode), which means it uses your existing **Claude Pro or Max subscription** — not the Anthropic API. No separate billing, no usage caps beyond what your plan already includes.
 
-> **Heads up:** Anthropic is changing how headless `claude --print` usage is billed starting **June 15, 2026**. After that date, agentic/SDK usage will be metered separately from your subscription. See [Anthropic's announcement](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan) for details. Until then, it runs entirely on your existing plan.
+> **Update (June 15):** Anthropic is **pausing** the previously announced changes to Claude Agent SDK billing. For now, nothing has changed — Claude Agent SDK, `claude -p`, and third-party app usage still draw from your subscription's usage limits. The previously announced monthly credit (which would have been available to eligible claimants in connection with these changes) isn't available. Anthropic is reworking the plan to better support how users build with Claude subscriptions and will share an update before anything takes effect. See [Anthropic's announcement](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan) for details.
 
 ## What it does
 
