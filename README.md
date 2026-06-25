@@ -5,6 +5,10 @@
 
 A Telegram bot that gives you a personal Claude Code agent on your phone. Send a message, get a response — including full tool use (web search, bash, file edits, etc.) with live status updates as it works.
 
+<p align="center">
+  <img src="docs/demo.gif" alt="Telegram Claude Agent demo" width="640">
+</p>
+
 ## No API key required — works with your Claude subscription
 
 This bot runs on top of `claude --print` (the Claude Code CLI in headless mode), which means it uses your existing **Claude Pro or Max subscription** — not the Anthropic API. No separate billing, no usage caps beyond what your plan already includes.
