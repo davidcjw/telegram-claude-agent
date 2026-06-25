@@ -23,9 +23,15 @@ touch "$HISTORY"
 PIDFILE="$BASE/.loop.pid"
 if [[ -f "$PIDFILE" ]]; then
   OLD=$(cat "$PIDFILE" 2>/dev/null)
-  if [[ -n "$OLD" ]] && kill -0 "$OLD" 2>/dev/null && [[ "$OLD" != "$$" ]]; then
-    echo "[$(date)] Already running pid=$OLD, exiting" >> "$LOG"
-    exit 0
+  if [[ -n "$OLD" && "$OLD" != "$$" ]] && kill -0 "$OLD" 2>/dev/null; then
+    # PID is live, but the OS recycles PIDs — confirm it's actually this
+    # agent's loop before honoring the lock, otherwise it's a stale pidfile
+    # whose number got reassigned to an unrelated process.
+    if ps -p "$OLD" -o command= 2>/dev/null | grep -q "telegram/$AGENT/loop.sh"; then
+      echo "[$(date)] Already running pid=$OLD, exiting" >> "$LOG"
+      exit 0
+    fi
+    echo "[$(date)] Stale pidfile (pid=$OLD is not this loop), taking over" >> "$LOG"
   fi
 fi
 echo $$ > "$PIDFILE"
